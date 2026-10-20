@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Consola.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Consola.Models">
+
+    <ScrollViewer Padding="24,16,24,24">
+        <StackPanel Spacing="20">
+            <StackPanel>
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Panel de control" />
+                <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="Elige un programa activo para ver CPU, memoria, hilos, ruta y el resto de datos." />
+            </StackPanel>
+
+            <InfoBar x:Name="AdminBar" Title="Sin privilegios de administrador"
+                     Message="Para ETW del kernel, volcados, heap .NET de otros procesos y servicios protegidos, reinicia Consola como administrador."
+                     Severity="Warning" IsOpen="False" IsClosable="True">
+                <InfoBar.ActionButton>
+                    <Button Content="Reiniciar como administrador" Click="Elevate_Click" />
+                </InfoBar.ActionButton>
+            </InfoBar>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="16">
+                    <InfoBar x:Name="PickHint" Title="Ningún programa seleccionado"
+                             Message="Arriba, en Programas activos, elige el proceso. Todas las secciones usarán ese objetivo."
+                             IsOpen="True" Severity="Informational" IsClosable="False" />
+                    <StackPanel x:Name="SelectedPanel" Spacing="12" Visibility="Collapsed">
+                        <Grid>
+                            <TextBlock x:Name="SelectedTitle" Style="{StaticResource SubtitleTextBlockStyle}" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                <Button Content="Consola interna" Click="GoInternals_Click" />
+                                <Button Content="Dependencias y red" Click="GoDeps_Click" />
+                                <Button Content="Ver inspección completa" Click="GoInspect_Click" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock x:Name="SelectedPath" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                        <Grid ColumnSpacing="12" RowSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CardBorderStyle}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="CPU" />
+                                    <TextBlock x:Name="SelCpu" Style="{StaticResource MetricValueStyle}" FontSize="22" />
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Memoria privada" />
+                                    <TextBlock x:Name="SelMem" Style="{StaticResource MetricValueStyle}" FontSize="22" />
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Hilos / handles" />
+                                    <TextBlock x:Name="SelThreads" Style="{StaticResource MetricValueStyle}" FontSize="22" />
+                                </StackPanel>
+                            </Border>
+            <Border Grid.Column="3" Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Estado" />
+                    <TextBlock x:Name="SelStatus" Style="{StaticResource MetricValueStyle}" FontSize="22" />
+                </StackPanel>
+            </Border>
+        </Grid>
+        <Grid ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Internet" />
+                    <TextBlock x:Name="SelNet" Style="{StaticResource MetricValueStyle}" FontSize="20" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Dependencias / carpeta" />
+                    <TextBlock x:Name="SelDeps" Style="{StaticResource MetricValueStyle}" FontSize="20" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+                        </Grid>
+                        <TextBlock x:Name="SelectedDetails" TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Grid ColumnSpacing="12" RowSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="CPU" />
+                        <TextBlock x:Name="CpuValue" Style="{StaticResource MetricValueStyle}" Text="—" />
+                        <ProgressBar x:Name="CpuBar" Maximum="100" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Memoria física" />
+                        <TextBlock x:Name="RamValue" Style="{StaticResource MetricValueStyle}" Text="—" />
+                        <ProgressBar x:Name="RamBar" Maximum="100" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Procesos / hilos" />
+                        <TextBlock x:Name="ProcValue" Style="{StaticResource MetricValueStyle}" Text="—" />
+                        <TextBlock x:Name="HandleValue" Style="{StaticResource MetricCaptionStyle}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Style="{StaticResource CardBorderStyle}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Tiempo activo" />
+                        <TextBlock x:Name="UptimeValue" Style="{StaticResource MetricValueStyle}" Text="—" />
+                        <TextBlock x:Name="OsValue" Style="{StaticResource MetricCaptionStyle}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Posibles fugas de memoria" />
+                        <ListView x:Name="LeakList" Height="280" SelectionMode="Single" IsItemClickEnabled="True" ItemClick="Leak_Click">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:DashboardAlert">
+                                    <StackPanel Margin="0,6">
+                                        <TextBlock FontWeight="SemiBold" Text="{x:Bind Title}" />
+                                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Text="{x:Bind Message}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="CPU más alta" />
+                        <ListView x:Name="TopCpuList" Height="280" SelectionMode="Single" IsItemClickEnabled="True" ItemClick="Process_Click">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:ProcessRow">
+                                    <Grid ColumnSpacing="12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="90" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                                        <TextBlock Grid.Column="1" Text="{x:Bind CpuText, Mode=OneWay}" />
+                                        <TextBlock Grid.Column="2" Text="{x:Bind MemoryText, Mode=OneWay}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

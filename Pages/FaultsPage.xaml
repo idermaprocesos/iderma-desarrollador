@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Consola.Pages.FaultsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Consola.Models">
+
+    <Grid Padding="20,12,20,16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <StackPanel>
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Fallos y eventos" />
+                <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           Text="Errores de Application/System, Application Error, WER y .NET Runtime." />
+            </StackPanel>
+            <CommandBar HorizontalAlignment="Right" DefaultLabelPosition="Right" OverflowButtonVisibility="Collapsed">
+                <AppBarButton Icon="Refresh" Label="Recargar 24 h" Click="Refresh_Click" />
+            </CommandBar>
+        </Grid>
+        <StackPanel Grid.Row="1" Spacing="8">
+            <AutoSuggestBox x:Name="SearchBox" Width="360" HorizontalAlignment="Left" QueryIcon="Find"
+                            PlaceholderText="Filtrar por proceso, origen o mensaje" TextChanged="Search_TextChanged" />
+            <InfoBar x:Name="EmptyBar" IsOpen="False" IsClosable="False" Severity="Informational" />
+        </StackPanel>
+        <ListView x:Name="FaultList" Grid.Row="2">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:FaultEvent">
+                    <StackPanel Margin="0,8">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock FontWeight="SemiBold" Text="{x:Bind TimeText}" />
+                            <TextBlock Text="{x:Bind Level}" />
+                            <TextBlock Text="{x:Bind Source}" />
+                            <TextBlock Text="{x:Bind EventId}" />
+                            <TextBlock Text="{x:Bind Process}" />
+                        </StackPanel>
+                        <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Message}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>

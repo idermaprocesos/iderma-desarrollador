@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Consola.Pages.DebugPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Consola.Models">
+
+    <Grid Padding="20,12,20,16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Debug interno .NET" />
+            <TextBlock x:Name="TargetText" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"
+                       Text="Instantánea SOS/ClrMD: runtimes, AppDomains, hilos administrados, excepciones y top del heap." />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12">
+            <Button x:Name="InspectButton" Style="{StaticResource AccentButtonStyle}" Content="Inspeccionar proceso seleccionado" Click="Inspect_Click" />
+            <ProgressRing x:Name="Busy" Width="24" Height="24" IsActive="False" />
+            <TextBlock x:Name="StatusText" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <InfoBar x:Name="ResultBar" Grid.Row="2" IsOpen="False" IsClosable="True" />
+
+        <Pivot Grid.Row="3">
+            <PivotItem Header="Hilos y pilas">
+                <ListView x:Name="ThreadList">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ManagedThreadInfo">
+                            <StackPanel Margin="0,8">
+                                <TextBlock FontWeight="SemiBold">
+                                    <Run Text="OS " /><Run Text="{x:Bind Tid}" />
+                                    <Run Text="  MT " /><Run Text="{x:Bind Osnr}" />
+                                    <Run Text="  " /><Run Text="{x:Bind Kind}" />
+                                </TextBlock>
+                                <TextBlock Foreground="{ThemeResource SystemFillColorCriticalBrush}" Text="{x:Bind Exception}" />
+                                <TextBlock FontFamily="Cascadia Mono, Consolas" FontSize="12" Text="{x:Bind Stack}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem Header="Heap (tipos)">
+                <ListView x:Name="HeapList">
+                    <ListView.Header>
+                        <Grid Padding="12,8" ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontWeight="SemiBold" Text="Objetos" />
+                            <TextBlock Grid.Column="1" FontWeight="SemiBold" Text="Tamaño" />
+                            <TextBlock Grid.Column="2" FontWeight="SemiBold" Text="Tipo" />
+                        </Grid>
+                    </ListView.Header>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:HeapTypeStat">
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{x:Bind Count}" />
+                                <TextBlock Grid.Column="1" Text="{x:Bind SizeText}" />
+                                <TextBlock Grid.Column="2" FontFamily="Cascadia Mono, Consolas" Text="{x:Bind Type}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem Header="Módulos y AppDomains">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="1.4*" />
+                    </Grid.ColumnDefinitions>
+                    <ListView x:Name="DomainList" />
+                    <ListView x:Name="ModuleList" Grid.Column="1" />
+                </Grid>
+            </PivotItem>
+        </Pivot>
+    </Grid>
+</Page>

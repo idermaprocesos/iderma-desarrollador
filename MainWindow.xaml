@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window
+    x:Class="Consola.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Consola.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Consola"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Consola — Analizador de sistemas"
+    mc:Ignorable="d">
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TitleBar
+            x:Name="AppTitleBar"
+            Title="Consola"
+            Subtitle="Analizador de sistemas"
+            IsBackButtonVisible="False"
+            IsPaneToggleButtonVisible="True"
+            BackRequested="TitleBar_BackRequested"
+            PaneToggleRequested="TitleBar_PaneToggleRequested" />
+
+        <Border Grid.Row="1" Padding="16,10,16,12" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,0,0,1">
+            <StackPanel Spacing="8">
+                <controls:ProcessPicker x:Name="Picker" />
+                <TextBlock x:Name="TargetMetrics" Style="{StaticResource MetricCaptionStyle}" FontSize="13"
+                           Text="{x:Bind Session.TargetCaption, Mode=OneWay}" />
+            </StackPanel>
+        </Border>
+
+        <NavigationView
+            x:Name="NavView"
+            Grid.Row="2"
+            IsBackButtonVisible="Collapsed"
+            IsPaneToggleButtonVisible="False"
+            IsSettingsVisible="True"
+            OpenPaneLength="248"
+            SelectionChanged="NavView_SelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Panel" IsSelected="True" Tag="home">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xEA8A;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Procesos" Tag="processes">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE71D;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Inspección" Tag="inspect">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE9D9;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Dependencias y red" Tag="deps">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE8F1;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Consola interna" Tag="internals">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE756;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Memoria y fugas" Tag="memory">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE950;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Actividad del sistema" Tag="activity">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE9D2;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Servicios" Tag="services">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE90F;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Fallos y eventos" Tag="faults">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE7BA;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Debug interno .NET" Tag="debug">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xEBE8;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="Acerca de" Tag="about">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE946;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+            <Frame x:Name="NavFrame" />
+        </NavigationView>
+
+        <Border Grid.Row="3" Padding="16,8" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="StatusText" VerticalAlignment="Center" Text="{x:Bind Session.Status, Mode=OneWay}" />
+                <TextBlock x:Name="StatusDetail" Grid.Column="1" Margin="16,0" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Session.StatusDetail, Mode=OneWay}" />
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <InfoBadge x:Name="EtwBadge" Value="{x:Bind Session.LiveEventCount, Mode=OneWay}" />
+                    <TextBlock x:Name="ElevationText" VerticalAlignment="Center" Text="{x:Bind Session.ElevationText, Mode=OneWay}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

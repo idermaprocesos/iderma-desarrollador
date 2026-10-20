@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Consola.Pages.ProcessesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Consola.Models">
+
+    <Grid Padding="20,12,20,16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <StackPanel>
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Procesos" />
+                <TextBlock x:Name="Subtitle" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+            <CommandBar DefaultLabelPosition="Right" HorizontalAlignment="Right" OverflowButtonVisibility="Collapsed">
+                <AppBarButton Icon="Refresh" Label="Actualizar" Click="Refresh_Click" />
+                <AppBarButton Label="Ver datos" Click="Inspect_Click">
+                    <AppBarButton.Icon><FontIcon Glyph="&#xE9D9;" /></AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarToggleButton x:Name="TreeToggle" Icon="List" Label="Árbol" Click="TreeToggle_Click" />
+            </CommandBar>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12">
+            <AutoSuggestBox x:Name="SearchBox" Width="280" QueryIcon="Find" PlaceholderText="Filtrar por nombre, PID, ruta o usuario"
+                            TextChanged="Search_TextChanged" />
+            <CheckBox x:Name="ManagedFilter" Content="Solo .NET" Click="Filter_Click" />
+            <CheckBox x:Name="HangFilter" Content="No responden" Click="Filter_Click" />
+            <CheckBox x:Name="LeakFilter" Content="Con fuga" Click="Filter_Click" />
+        </StackPanel>
+
+        <Grid Grid.Row="2">
+            <ListView x:Name="ProcessList" SelectionMode="Single" SelectionChanged="ProcessList_SelectionChanged">
+                <ListView.Header>
+                    <Grid Padding="12,8" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="160" />
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontWeight="SemiBold" Text="PID" />
+                        <TextBlock Grid.Column="1" FontWeight="SemiBold" Text="Nombre" />
+                        <TextBlock Grid.Column="2" FontWeight="SemiBold" Text="CPU" />
+                        <TextBlock Grid.Column="3" FontWeight="SemiBold" Text="Privada" />
+                        <TextBlock Grid.Column="4" FontWeight="SemiBold" Text="Hilos" />
+                        <TextBlock Grid.Column="5" FontWeight="SemiBold" Text="Handles" />
+                        <TextBlock Grid.Column="6" FontWeight="SemiBold" Text="Arch" />
+                        <TextBlock Grid.Column="7" FontWeight="SemiBold" Text="Runtime" />
+                        <TextBlock Grid.Column="8" FontWeight="SemiBold" Text="Usuario" />
+                        <TextBlock Grid.Column="9" FontWeight="SemiBold" Text="Ruta / fuga" />
+                    </Grid>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ProcessRow">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="160" />
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{x:Bind Pid}" />
+                            <TextBlock Grid.Column="1" Text="{x:Bind Name, Mode=OneWay}" />
+                            <TextBlock Grid.Column="2" Text="{x:Bind CpuText, Mode=OneWay}" />
+                            <TextBlock Grid.Column="3" Text="{x:Bind MemoryText, Mode=OneWay}" />
+                            <TextBlock Grid.Column="4" Text="{x:Bind ThreadCount, Mode=OneWay}" />
+                            <TextBlock Grid.Column="5" Text="{x:Bind HandleCount, Mode=OneWay}" />
+                            <TextBlock Grid.Column="6" Text="{x:Bind Architecture, Mode=OneWay}" />
+                            <TextBlock Grid.Column="7" Text="{x:Bind ManagedText, Mode=OneWay}" />
+                            <TextBlock Grid.Column="8" Text="{x:Bind User, Mode=OneWay}" />
+                            <StackPanel Grid.Column="9">
+                                <TextBlock Text="{x:Bind Path, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Foreground="{ThemeResource SystemFillColorCriticalBrush}" Text="{x:Bind LeakText, Mode=OneWay}" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TreeView x:Name="ProcessTree" Visibility="Collapsed" ItemInvoked="ProcessTree_ItemInvoked">
+                <TreeView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ProcessNode">
+                        <TreeViewItem ItemsSource="{x:Bind Children}" Content="{x:Bind Label}" />
+                    </DataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </Grid>
+    </Grid>
+</Page>

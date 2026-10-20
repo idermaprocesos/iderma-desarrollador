@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Consola (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Consola (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

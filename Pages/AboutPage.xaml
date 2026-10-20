@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Consola.Pages.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="24,16,24,24">
+        <StackPanel Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+            <Image Width="72" Height="72" HorizontalAlignment="Left" Source="ms-appx:///Assets/logo.ico" />
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Consola" />
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Analizador de sistemas para desarrolladores" />
+            <TextBlock TextWrapping="Wrap" Text="Inspecciona procesos de Windows, subprocesos, módulos, dependencias, archivos de la carpeta, conexiones a Internet, consola Win32, OutputDebugString, textos de UI, pila .NET, servicios, ETW, fallos, fugas de memoria y runtimes con ClrMD." />
+            <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       Text="WinUI 3 · Windows App SDK · TraceEvent · ClrMD · ToolHelp / PSAPI / MiniDump. Versión 1.0." />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

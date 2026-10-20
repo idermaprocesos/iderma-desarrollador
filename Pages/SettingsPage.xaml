@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Consola.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="24,16,24,24">
+        <StackPanel Spacing="20" MaxWidth="720" HorizontalAlignment="Left">
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Ajustes" />
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Privilegios" />
+                    <TextBlock x:Name="ElevationStatus" TextWrapping="Wrap" />
+                    <Button Content="Reiniciar como administrador" Click="Elevate_Click" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Tema" />
+                    <ComboBox x:Name="ThemeBox" SelectedIndex="0" SelectionChanged="Theme_Changed">
+                        <ComboBoxItem Content="Oscuro" />
+                        <ComboBoxItem Content="Claro" />
+                        <ComboBoxItem Content="Sistema" />
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Notas de uso" />
+                    <TextBlock TextWrapping="Wrap" Text="Consola es una herramienta de diagnóstico local. Inspecciona procesos, servicios, ETW y heaps .NET en este equipo. No extrae secretos ni automatiza ataques: úsala sobre software que tengas derecho a depurar." />
+                    <TextBlock TextWrapping="Wrap" Text="Los syscalls ETW son de muy alto volumen. El análisis de fugas usa series de memoria privada, handles, hilos y GDI; es heurístico, no una prueba formal." />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

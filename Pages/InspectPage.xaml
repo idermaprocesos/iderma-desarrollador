@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Consola.Pages.InspectPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Consola.Models">
+
+    <Grid Padding="20,12,20,16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <StackPanel>
+                <TextBlock x:Name="TitleText" Style="{StaticResource TitleTextBlockStyle}" Text="Inspección" />
+                <TextBlock x:Name="PathText" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"
+                           Text="El programa elegido arriba se inspecciona aquí: hilos, módulos, hijos y volcado." />
+            </StackPanel>
+            <CommandBar HorizontalAlignment="Right" DefaultLabelPosition="Right" OverflowButtonVisibility="Collapsed">
+                <AppBarButton Icon="Save" Label="Mini dump" Click="Dump_Click" />
+                <AppBarButton Icon="Folder" Label="Abrir dumps" Click="OpenDumps_Click" />
+                <AppBarButton Icon="Copy" Label="Copiar línea de comandos" Click="CopyCmd_Click" />
+            </CommandBar>
+        </Grid>
+
+        <InfoBar x:Name="EmptyBar" Grid.Row="1" Title="Ningún proceso seleccionado"
+                 Message="Elige un programa en Programas activos (barra superior). Resumen, hilos y módulos aparecen aquí."
+                 IsOpen="True" Severity="Informational" />
+
+        <Pivot x:Name="DetailPivot" Grid.Row="2">
+            <PivotItem Header="Resumen">
+                <ScrollViewer>
+                    <GridView x:Name="SummaryGrid" Margin="0,12,0,0" SelectionMode="None">
+                        <GridView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource CardBorderStyle}" Width="280" Margin="6">
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </GridView>
+                </ScrollViewer>
+            </PivotItem>
+            <PivotItem Header="Hilos">
+                <ListView x:Name="ThreadList" Margin="0,8,0,0">
+                    <ListView.Header>
+                        <Grid Padding="12,8" ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontWeight="SemiBold" Text="TID" />
+                            <TextBlock Grid.Column="1" FontWeight="SemiBold" Text="Prio" />
+                            <TextBlock Grid.Column="2" FontWeight="SemiBold" Text="Inicio" />
+                            <TextBlock Grid.Column="3" FontWeight="SemiBold" Text="CPU" />
+                            <TextBlock Grid.Column="4" FontWeight="SemiBold" Text="Estado" />
+                        </Grid>
+                    </ListView.Header>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ThreadRow">
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{x:Bind Tid}" />
+                                <TextBlock Grid.Column="1" Text="{x:Bind Priority}" />
+                                <TextBlock Grid.Column="2" Text="{x:Bind StartAddress}" />
+                                <TextBlock Grid.Column="3" Text="{x:Bind CpuTime}" />
+                                <TextBlock Grid.Column="4" Text="{x:Bind State}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem Header="Módulos">
+                <ListView x:Name="ModuleList" Margin="0,8,0,0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ModuleRow">
+                            <StackPanel Margin="0,6">
+                                <TextBlock FontWeight="SemiBold" Text="{x:Bind Name}" />
+                                <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Path}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind BaseAddress}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem Header="Árbol hijo">
+                <ListView x:Name="ChildList" Margin="0,8,0,0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ProcessRow">
+                            <TextBlock>
+                                <Run Text="{x:Bind Name}" />
+                                <Run Text="  (" />
+                                <Run Text="{x:Bind Pid}" />
+                                <Run Text=")  " />
+                                <Run Text="{x:Bind MemoryText, Mode=OneWay}" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+        </Pivot>
+    </Grid>
+</Page>

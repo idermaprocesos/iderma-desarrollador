@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Consola.Pages.InternalsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Consola.Models">
+
+    <Grid Padding="20,12,20,16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <StackPanel>
+                <TextBlock x:Name="TitleText" Style="{StaticResource TitleTextBlockStyle}" Text="Consola interna" />
+                <TextBlock x:Name="PathText" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"
+                           Text="Intenta leer la consola Win32, OutputDebugString, textos de UI y la pila .NET para entender qué está haciendo el proceso." />
+            </StackPanel>
+            <CommandBar HorizontalAlignment="Right" DefaultLabelPosition="Right" OverflowButtonVisibility="Collapsed">
+                <AppBarButton Icon="Refresh" Label="Actualizar" Click="Refresh_Click" />
+                <AppBarButton Label="Pila .NET" Click="Managed_Click">
+                    <AppBarButton.Icon><FontIcon Glyph="&#xEBE8;" /></AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
+        </Grid>
+
+        <InfoBar x:Name="EmptyBar" Grid.Row="1" Title="Ningún proceso seleccionado"
+                 Message="Elige un programa arriba. Consola intentará adjuntar su consola, el canal de debug y reconstruir lo que está haciendo."
+                 IsOpen="True" Severity="Informational" />
+        <InfoBar x:Name="StatusBar" Grid.Row="1" IsOpen="False" IsClosable="True" />
+
+        <Grid x:Name="MetricsGrid" Grid.Row="2" ColumnSpacing="12" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Consola Win32" />
+                    <TextBlock x:Name="ConsoleStatus" Style="{StaticResource MetricValueStyle}" FontSize="18" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="OutputDebugString" />
+                    <TextBlock x:Name="DebugStatus" Style="{StaticResource MetricValueStyle}" FontSize="18" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource MetricCaptionStyle}" Text="Pistas internas" />
+                    <TextBlock x:Name="HintStatus" Style="{StaticResource MetricValueStyle}" FontSize="18" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Pivot x:Name="DetailPivot" Grid.Row="3" Visibility="Collapsed">
+            <PivotItem Header="Qué está haciendo">
+                <ScrollViewer>
+                    <TextBlock x:Name="NarrativeText" Margin="4,12" TextWrapping="Wrap" FontSize="14"
+                               FontFamily="Cascadia Mono, Consolas, Segoe UI" />
+                </ScrollViewer>
+            </PivotItem>
+            <PivotItem Header="Consola">
+                <TextBox x:Name="ConsoleBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                         FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto" />
+            </PivotItem>
+            <PivotItem Header="Debug interno">
+                <ListView x:Name="DebugList">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:DebugLine">
+                            <StackPanel Margin="0,4">
+                                <TextBlock FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind TimeText}" />
+                                <TextBlock TextWrapping="Wrap" FontFamily="Cascadia Mono, Consolas" Text="{x:Bind Text}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem Header="UI / ventanas">
+                <ListView x:Name="WindowList">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:WindowInfoRow">
+                            <StackPanel Margin="0,6">
+                                <TextBlock TextWrapping="Wrap" Text="{x:Bind Title}" />
+                                <TextBlock FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                    <Run Text="{x:Bind ClassName}" />
+                                    <Run Text="  ·  " />
+                                    <Run Text="{x:Bind VisibleText}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem Header="Pila .NET">
+                <TextBox x:Name="ManagedBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                         FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto" />
+            </PivotItem>
+        </Pivot>
+    </Grid>
+</Page>

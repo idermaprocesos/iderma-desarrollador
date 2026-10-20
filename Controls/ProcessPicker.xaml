@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="Consola.Controls.ProcessPicker"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Consola.Models">
+
+    <Grid ColumnSpacing="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="240" />
+        </Grid.ColumnDefinitions>
+        <ComboBox
+            x:Name="Combo"
+            HorizontalAlignment="Stretch"
+            Header="Programas activos"
+            PlaceholderText="Elige un programa en ejecución"
+            MaxDropDownHeight="460"
+            IsEditable="False"
+            IsTextSearchEnabled="True"
+            SelectionChanged="Combo_SelectionChanged">
+            <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="models:ProcessRow">
+                    <Grid ColumnSpacing="10" MinWidth="520">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="64" />
+                            <ColumnDefinition Width="72" />
+                            <ColumnDefinition Width="88" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontWeight="SemiBold" Text="{x:Bind Name, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Grid.Column="1" Text="{x:Bind Pid}" />
+                        <TextBlock Grid.Column="2" Text="{x:Bind CpuText, Mode=OneWay}" />
+                        <TextBlock Grid.Column="3" Text="{x:Bind MemoryText, Mode=OneWay}" />
+                        <TextBlock Grid.Column="4" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind WindowTitle, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                    </Grid>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <AutoSuggestBox
+            x:Name="SearchBox"
+            Grid.Column="1"
+            Header="Filtrar"
+            PlaceholderText="Nombre, PID o ventana"
+            QueryIcon="Find"
+            TextChanged="Search_TextChanged" />
+    </Grid>
+</UserControl>
